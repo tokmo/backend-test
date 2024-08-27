@@ -1,0 +1,51 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Role {
+  createdAt DateTime   @default(now())
+  employees Employee[]
+  id        String     @id @default(cuid())
+  title     String?
+  updatedAt DateTime   @updatedAt
+}
+
+model Department {
+  createdAt DateTime   @default(now())
+  employees Employee[]
+  id        String     @id @default(cuid())
+  name      String?
+  updatedAt DateTime   @updatedAt
+}
+
+model Employee {
+  attendances  Attendance[]
+  createdAt    DateTime     @default(now())
+  department   Department?  @relation(fields: [departmentId], references: [id])
+  departmentId String?
+  email        String?
+  id           String       @id @default(cuid())
+  name         String?
+  role         Role?        @relation(fields: [roleId], references: [id])
+  roleId       String?
+  updatedAt    DateTime     @updatedAt
+}
+
+model Attendance {
+  createdAt  DateTime              @default(now())
+  date       DateTime?
+  employee   Employee?             @relation(fields: [employeeId], references: [id])
+  employeeId String?
+  id         String                @id @default(cuid())
+  status     EnumAttendanceStatus?
+  updatedAt  DateTime              @updatedAt
+}
+
+enum EnumAttendanceStatus {
+  Option1
+}
